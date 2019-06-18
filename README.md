@@ -8,4 +8,5 @@
   - Không cần quản lý thủ công nhiều APKs: Không phải tạo nhiều APK cho các device có độ phân giải màn hình khác nhau. Chúng ta chỉ cần tải lên một artifact duy nhất cùng với tất cả các tài nguyên của ứng dụng, việc xây dựng và cung cấp cho người dùng sẽ được xử lý tự động.
   - Dynamic Feature Module (Phân phối động): Cho phép người dùng tải xuống và cài đặt thêm các tính năng khi có yêu cầu. Điều này cho phép chúng ta làm giảm kích thước ban đầu của app. Các tính năng này nằm ở các module khác nhau và sử dụng thư viện Play Core Library để tải xuống các module này.
   - Giảm kích thước APK: Sử dụng cơ chế Split APK, Google Play có thể chia một app lớn thành nhiều gói nhỏ, các gói này được cài đặt theo yêu cầu người dùng.
-  - Support Instant App: Người dùng có thể chạy các feature module mà không cần phải cài đặt app. Tham khảo Instant App <link rel="tại đây" href="https://viblo.asia/p/android-instant-app-buoc-dot-pha-cho-trai-nghiem-nguoi-dung-XL6lAA0mlek">
+  - Support Instant App: Người dùng có thể chạy các feature module mà không cần phải cài đặt app. Tham khảo Instant App 
+  <link rel="tại đây" href="https://viblo.asia/p/android-instant-app-buoc-dot-pha-cho-trai-nghiem-nguoi-dung-XL6lAA0mlek">
