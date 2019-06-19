@@ -21,7 +21,12 @@
 - Chi tiết:
   + base/, feature1/, feature2/: Đại diện cho một module khác nhau của app, và tất cả được chứa trong base directory của App Bundle. Tuy nhiên, thư mục cho <>dynamic module</b> được đặt tên theo chỉ định bởi thuộc tính split trong module manifest.
   + BUNDLE-METADATA/: Thư mục này bao gồm các file metadata chứa các thông tin hữu ích cho các tool hoặc app store. Các file metadata như vậy có thể bao gồm ánh xạ Proguard, danh sách đầy đủ các tệp *DEX* của app. Các file trong mục này không được đóng gói vào APK của app.
-  + Module Protocol Buffer(.pb): Các file này cung cấp metadata để mô tả nội dung của từng module cho app store. Ví dụ: *BundleConfig.pb* cung cấp thông tin của chính nó chẳng hạn như version nào của các tool được sử dụng để xây dựng app bundle *native.pb*, *resources.pb* mô tả code và resources trong mỗi module, rất hữu ích khi Google Play tối ưu hóa APK cho các cấu hình thiết bị khác nhau. *assets.pb* 
+  + Module Protocol Buffer(.pb): Các file này cung cấp metadata để mô tả nội dung của từng module cho app store, các tool sử dụng để chuyển đổi *app bundle* trước khi nó được convert thành định dạng nhị phân sử dụng trong APK. Ví dụ: *BundleConfig.pb* cung cấp thông tin của chính nó chẳng hạn như version nào của các tool được sử dụng để xây dựng app bundle *native.pb*, *resources.pb* (resource.arac trong APK) mô tả code và resources trong mỗi module, rất hữu ích khi Google Play tối ưu hóa APK cho các cấu hình thiết bị khác nhau. *assets.pb* sẽ chỉ sử dụng khi bạn đang sử dụng tài nguyên trong app.
+  + manifest/: *app bundle* sẽ lưu trữ các file AndroidManifest.xml của mỗi module trong thư mục riêng này. Khác với APK
+  + dex/: *app bundle* sẽ lưu trữ các file DEX cho mỗi module trong thư mục riêng này. Khác với APK
+  + res/, lib/, assets/: Giống trong APK, khi bạn upload *app bundle* Google Play sẽ chỉ kiểm tra các thư mục và các package, các file thỏa mãn cấu hình device trong khi đó vẫn giữ được đường dẫn.
+  + root/: Dùng để lưu trữ các file mà sau đó được chuyển tới root của bất kỳ APK có chứa module mà thư mục này được đặt. Ví dụ: Thư mục *base/root* của app bundle có thể chứa Java-based resources mà app của bạn tải bằng Class.getResource(). Các tệp này sau đó sẽ được chuyển đến root của APK cơ sở và mọi APK mà Google Play tạo ra. Đường dẫn trong thư mục này vẫn được giữ nguyên.
+- Cẩn thận: Nếu nội dung trong các file này xung đột với các file và thư mục khác trong root APK, Play Console sẽ từ chối toàn bộ app bundle gửi lên . Ví dụ: root/lib nó sẽ xung đột với thư mục lib đã tồn tại trong mỗi APK.
 - Note: Nếu sử dụng để tạo nhiều phiên bản ứng dụng từ một app project và mỗi version sử dụng applicationID duy nhất, bạn cần phải tạo một App Bundle riêng biệt cho từng version.
 
 ## Tham khảo
