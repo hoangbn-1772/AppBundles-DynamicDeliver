@@ -1,19 +1,21 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 android {
     compileSdkVersion 28
+
+
     defaultConfig {
-        applicationId "com.example.appbundlesample"
+        applicationId "com.example.test"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,9 +23,19 @@ android {
         }
     }
 
+    bundle {
+        language {
+            enableSplit = false
+        }
 
-    dynamicFeatures = [":dynamic_feature"]
+        density {
+            enableSplit = true
+        }
 
+        abi {
+            enableSplit = true
+        }
+    }
 
 }
 
@@ -36,7 +48,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    // Use library Play Core library
-    implementation 'com.google.android.play:core:1.6.1'
 }

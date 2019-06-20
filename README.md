@@ -3,12 +3,12 @@
 - App Bundles là một định dạng upload mới bao gồm tất cả các code và resource được compile từ app, không tạo APK.
 - Publish với App Bundle cũng tăng giới hạn kích thước app lên 150MB mà không cần phải sử dụng APK. Đó là kích thước tải xuống chứ không phải kích thước xuất bản.
 ## Lợi ích của App Bundle
-- Dynamic Delivery: Kích thước ứng dụng nhỏ hơn.
-- Không cần tạo và quản lý thủ công nhiều APKs: Không phải tạo nhiều APK cho các device có độ phân giải màn hình khác nhau. Chúng ta chỉ cần tải lên một artifact duy nhất cùng với tất cả các tài nguyên của ứng dụng, việc xây dựng và cung cấp cho người dùng sẽ được xử lý tự động. Nghĩa là App Bundle sẽ tạo ra nhiều ra APK tối ưu hóa cho từng thiết bị cài đặt nó.
-- Dynamic Feature Module (Phân phối động): Cho phép người dùng tải xuống và cài đặt thêm các tính năng khi có yêu cầu. Điều này cho phép chúng ta làm giảm kích thước ban đầu của app. Các tính năng này nằm ở các module khác nhau và sử dụng thư viện Play Core Library để tải xuống các module này.
-- Giảm kích thước APK: Sử dụng cơ chế Split APK, Google Play có thể chia một app lớn thành nhiều gói nhỏ, các gói này được cài đặt theo yêu cầu người dùng.
+- Dynamic Delivery: Kích thước APK nhỏ hơn.
+- Không cần tạo và quản lý thủ công nhiều APK
+- Dynamic Feature Module (Phân phối động): Cho phép người dùng tải xuống và cài đặt thêm các tính năng khi có yêu cầu. Điều này cho phép chúng ta làm giảm kích thước ban đầu của app. Các tính năng này nằm ở các module khác nhau và sử dụng thư viện <b>Play Core Library</b> để tải xuống các module này.
 - Support Instant App: Người dùng có thể chạy các feature module mà không cần phải cài đặt app. Tham khảo Instant App 
   <a href="https://viblo.asia/p/android-instant-app-buoc-dot-pha-cho-trai-nghiem-nguoi-dung-XL6lAA0mlek">Tại đây</a>
+
 ## Định dạng App Bundle
 - App Bundle là một file (có phần mở rộng .aab, không thể cài đặt trên device) mà bản upload lên Google Play để được support *Dynamic Delivery*.
 - App Bundle là các tệp nhị phân được ký kết, sắp xếp code và resource trong module.
@@ -17,17 +17,48 @@
 
 - Các phần được tô màu xanh như drawable, values, lib đại diện cho code và resource mà Google Play sử dụng để tạo APK cấu hình cho từng Module.
 - Chi tiết:
-	+ base/, feature1/, feature2/: Đại diện cho một module khác nhau của app, và tất cả được chứa trong base directory của App Bundle. Tuy nhiên, thư mục cho <>dynamic module</b> được đặt tên theo chỉ định bởi thuộc tính split trong module manifest.
-  	+ BUNDLE-METADATA/: Thư mục này bao gồm các file metadata chứa các thông tin hữu ích cho các tool hoặc app store. Các file metadata như vậy có thể bao gồm ánh xạ Proguard, danh sách đầy đủ các tệp *DEX* của app. Các file trong mục này không được đóng gói vào APK của app.
-  	+ Module Protocol Buffer(.pb): Các file này cung cấp metadata để mô tả nội dung của từng module cho app store, các tool sử dụng để chuyển đổi *app bundle* trước khi nó được convert thành định dạng nhị phân sử dụng trong APK. Ví dụ: *BundleConfig.pb* cung cấp thông tin của chính nó chẳng hạn như version nào của các tool được sử dụng để xây dựng app bundle *native.pb*, *resources.pb* (resource.arac trong APK) mô tả code và resources trong mỗi module, rất hữu ích khi Google Play tối ưu hóa APK cho các cấu hình thiết bị khác nhau. *assets.pb* sẽ chỉ sử dụng khi bạn đang sử dụng tài nguyên trong app.
-  	+ manifest/: *app bundle* sẽ lưu trữ các file AndroidManifest.xml của mỗi module trong thư mục riêng này. Khác với APK
-  	+ dex/: *app bundle* sẽ lưu trữ các file DEX cho mỗi module trong thư mục riêng này. Khác với APK
-  	+ res/, lib/, assets/: Giống trong APK, khi bạn upload *app bundle* Google Play sẽ chỉ kiểm tra các thư mục và các package, các file thỏa mãn cấu hình device trong khi đó vẫn giữ được đường dẫn.
-  	+ root/: Dùng để lưu trữ các file mà sau đó được chuyển tới root của bất kỳ APK có chứa module mà thư mục này được đặt. Ví dụ: Thư mục *base/root* của app bundle có thể chứa Java-based resources mà app của bạn tải bằng Class.getResource(). Các tệp này sau đó sẽ được chuyển đến root của APK cơ sở và mọi APK mà Google Play tạo ra. Đường dẫn trong thư mục này vẫn được giữ nguyên.
-- Cẩn thận: Nếu nội dung trong các file này xung đột với các file và thư mục khác trong root APK, Play Console sẽ từ chối toàn bộ app bundle gửi lên . Ví dụ: root/lib nó sẽ xung đột với thư mục lib đã tồn tại trong mỗi APK.
-- Note: Nếu sử dụng để tạo nhiều phiên bản ứng dụng từ một app project và mỗi version sử dụng applicationID duy nhất, bạn cần phải tạo một App Bundle riêng biệt cho từng version.
+	+ base/, feature1/, feature2/: Đại diện cho một module khác nhau của app.
+  	+ BUNDLE-METADATA/: Thư mục này bao gồm các file metadata chứa các thông tin tools và app stores.
+  	+ Module Protocol Buffer(.pb): Các file này cung cấp metadata để mô tả nội dung của từng module cho app store.Ví dụ: *BundleConfig.pb* cung cấp thông tin của chính nó chẳng hạn như version nào của các tool được sử dụng để xây dựng app bundle *native.pb*, *resources.pb* (resource.arac trong APK) mô tả code và resources trong mỗi module, *assets.pb* sẽ chỉ sử dụng khi bạn đang sử dụng tài nguyên trong app.
+  	+ manifest/: *app bundle* sẽ lưu trữ các file AndroidManifest.xml của mỗi module trong thư mục riêng này.
+  	+ dex/: *app bundle* sẽ lưu trữ các file DEX cho mỗi module trong thư mục riêng này.
+  	+ res/, lib/, assets/: Giống trong APK.
+  	+ root/: Dùng để lưu trữ file root của bất kỳ APK có chứa module mà thư mục này được đặt.
+- *Cẩn thận*: Nếu nội dung trong các file *root* xung đột với các file và thư mục khác trong root APK, Play Console sẽ từ chối toàn bộ app bundle gửi lên . Ví dụ: root/lib nó sẽ xung đột với thư mục lib đã tồn tại trong mỗi APK.
+- *Note*: Nếu sử dụng *product flavor* để tạo nhiều version cho app từ một app project và mỗi version sử dụng applicationID duy nhất, bạn cần phải tạo một App Bundle riêng biệt cho từng version.
+
+## Building và Distributing App Bundle
+- Config:
+
+	<img src="images/config_deploy_app_bundle.png">
+
+- Bấm *Run* để build và deploy app trên device. 
+- *Note*: Android Studio yêu cầu AAPT2 để build *app bundle* (mặc định được bật cho các project mới). Để đảm bảo nó được bật trên project hiện có, thêm *android.enableAapt2=true* trong *gradle.properties* và restart lại Gradle bằng *./gradlew --stop* từ command line.
+
+- Generate *App Bundle* bằng cách sử dụng Android Studio từ 3.2 trở lên hoặc Console *./gradlew bundle*.
+- *App Bundle* được tạo ra sẽ lưu trữ trong *app/build/outputs/bundle/buildVariant/bundle.aab*
+- Khi build *app bundle*, mặc định tất cả các phân tách sẽ được generate. Ta có thể thiết lập những phần nào sẽ được đóng gói vào APK bằng cách sử dụng khối bundle{} trong khối android{}
+	<img src="images/setup_bundle_generate.png">
+
+<img src="images/build_app_bundle.png"/>
 
 ## Bundle tool
+- Là công cụ mà Gradle, Android Studio, Google Play sử dụng để xây dựng *App Bundle* hoặc chuyển đổi *App Bundle* thành APK triển khai trên device.
+### Generate APKs từ App Bundle
+- Generate apks từ *app bundle*: *java -jar ./bundletool-all-0.10.0.jar build-apks --bundle=./app.aab --output=./out.apks*
+<img src="images/result_apk_set.png">
+- Cài vào device: *java -jar ./bundletool-all-0.10.0.jar install-apks --apks=./out.apks*
+### Generate APKs cho một device cụ thể
+- Nếu không muốn build một bộ APk cho tất cả các cấu hình device, có thể tạo APK nhắm mục tiêu cấu hình thiết bị cụ thể
+	+ Thiết bị được kết nối: *java -jar ./bundletool-all-0.10.0.jar  build-apks --connected-device --bundle=./app.aab --output=./out_specific.apks*
+	
+	<img src="images/result_apk_connected.png"/>
+
+	+ Sử dụng tệp Json mô tả cấu hình device: java -jar ./bundletool-all-0.10.0.jar  build-apks --device-spec=./pixel1.json --bundle=./app.aab --output=./out_specific_json.apks
+	
+	<img src="images/device_specific_json.png">
+
+	<img src="images/result_apk_connected.png">
 
 # Phần 2: Dynamic Deliver
 - Mô hình phục vụ ứng dụng Google Play, sử dụng *App Bundle* để tạo ra APK nhỏ hơn, tối ưu hóa cho từng cấu hình device. Vì vậy, người dùng chỉ cần download code và resouces cần thiết để chạy app. Bạn không cần phải xây dựng và quản lý nhiều APK để hỗ trợ cho các device khác nhau nữa.
