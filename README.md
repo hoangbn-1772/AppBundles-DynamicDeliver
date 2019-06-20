@@ -13,7 +13,7 @@
 - App Bundle là một file (có phần mở rộng .aab, không thể cài đặt trên device) mà bản upload lên Google Play để được support *Dynamic Delivery*.
 - App Bundle là các tệp nhị phân được ký kết, sắp xếp code và resource trong module.
 
-<img src="images/app_bundle_format.xml">
+<img src="images/app_bundle_format.png">
 
 - Các phần được tô màu xanh như drawable, values, lib đại diện cho code và resource mà Google Play sử dụng để tạo APK cấu hình cho từng Module.
 - Chi tiết:
@@ -46,19 +46,23 @@
 - Là công cụ mà Gradle, Android Studio, Google Play sử dụng để xây dựng *App Bundle* hoặc chuyển đổi *App Bundle* thành APK triển khai trên device.
 ### Generate APKs từ App Bundle
 - Generate apks từ *app bundle*: *java -jar ./bundletool-all-0.10.0.jar build-apks --bundle=./app.aab --output=./out.apks*
+
 <img src="images/result_apk_set.png">
+
 - Cài vào device: *java -jar ./bundletool-all-0.10.0.jar install-apks --apks=./out.apks*
+
 ### Generate APKs cho một device cụ thể
-- Nếu không muốn build một bộ APk cho tất cả các cấu hình device, có thể tạo APK nhắm mục tiêu cấu hình thiết bị cụ thể
+
+- Nếu không muốn build một bộ APk cho tất cả các cấu hình device, có thể tạo APK nhắm mục tiêu cấu hình thiết bị cụ thể.
 	+ Thiết bị được kết nối: *java -jar ./bundletool-all-0.10.0.jar  build-apks --connected-device --bundle=./app.aab --output=./out_specific.apks*
 	
-	<img src="images/result_apk_connected.png"/>
+<img src="images/result_apk_connected.png"/>
 
 	+ Sử dụng tệp Json mô tả cấu hình device: java -jar ./bundletool-all-0.10.0.jar  build-apks --device-spec=./pixel1.json --bundle=./app.aab --output=./out_specific_json.apks
 	
-	<img src="images/device_specific_json.png">
+<img src="images/device_specific_json.png">
 
-	<img src="images/result_apk_connected.png">
+<img src="images/result_apk_connected.png">
 
 # Phần 2: Dynamic Deliver
 - Mô hình phục vụ ứng dụng Google Play, sử dụng *App Bundle* để tạo ra APK nhỏ hơn, tối ưu hóa cho từng cấu hình device. Vì vậy, người dùng chỉ cần download code và resouces cần thiết để chạy app. Bạn không cần phải xây dựng và quản lý nhiều APK để hỗ trợ cho các device khác nhau nữa.
@@ -90,4 +94,3 @@
 - https://medium.com/mindorks/android-app-bundle-6c65ce8105a1
 - https://viblo.asia/p/gioi-thieu-ve-android-app-bundle-m68Z00r6ZkG
 - https://viblo.asia/p/co-ban-ve-android-app-bundle-ByEZkNdqKQ0
-- https://techtalk.vn/co-ban-ve-android-app-bundle.html
