@@ -13,7 +13,7 @@
 - App Bundle là một file (có phần mở rộng .aab, không thể cài đặt trên device) mà bản upload lên Google Play để được support *Dynamic Delivery*.
 - App Bundle là các tệp nhị phân được ký kết, sắp xếp code và resource trong module.
 
-<img src="images/app_bundle_format.xml">
+<img src="images/app_bundle_format.png">
 
 - Các phần được tô màu xanh như drawable, values, lib đại diện cho code và resource mà Google Play sử dụng để tạo APK cấu hình cho từng Module.
 - Chi tiết:
@@ -90,4 +90,3 @@
 - https://medium.com/mindorks/android-app-bundle-6c65ce8105a1
 - https://viblo.asia/p/gioi-thieu-ve-android-app-bundle-m68Z00r6ZkG
 - https://viblo.asia/p/co-ban-ve-android-app-bundle-ByEZkNdqKQ0
-- https://techtalk.vn/co-ban-ve-android-app-bundle.html
