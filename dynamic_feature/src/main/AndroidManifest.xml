@@ -1,7 +1,8 @@
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.example.dynamic_feature">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:dist="http://schemas.android.com/apk/distribution"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.example.dynamic_feature">
 
     <dist:module
         dist:instant="false"
@@ -9,4 +10,15 @@
         dist:title="@string/title_dynamic_feature">
         <dist:fusing dist:include="true"/>
     </dist:module>
+
+    <application
+        android:hasCode="false"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity
+            android:name=".DynamicActivity"
+            android:label="@string/title_dynamic_feature"
+            android:theme="@style/Theme.AppCompat">
+        </activity>
+    </application>
+
 </manifest>

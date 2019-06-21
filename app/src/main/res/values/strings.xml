@@ -2,5 +2,18 @@
     <string name="app_name">AppBundleSample</string>
     <string name="app_slogan">AppBundle</string>
     <string name="title_dynamic_feature">Module Title</string>
+    <string name="button_goto_feature">Go to Feature</string>
     <string name="button_download_feature">Install Feature</string>
+    <string name="download_success">Download Success</string>
+    <string name="download_fail">Download Fail</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="installing">Installing</string>
+    <string name="installed">Installed</string>
+    <string name="canceling">Canceling</string>
+    <string name="canceled">Canceled</string>
+    <string name="network_error">Network error</string>
+    <string name="invalid_request">Invalid request</string>
+    <string name="module_unavailable">Module Unavailable</string>
+    <string name="title_dynamic_feature2">Dynamic-Feature-2</string>
 </resources>

@@ -30,7 +30,7 @@
 ## Building và Distributing App Bundle
 - Config:
 
-	<img src="images/config_deploy_app_bundle.png">
+<img src="images/config_deploy_app_bundle.png"/>
 
 - Bấm *Run* để build và deploy app trên device. 
 - *Note*: Android Studio yêu cầu AAPT2 để build *app bundle* (mặc định được bật cho các project mới). Để đảm bảo nó được bật trên project hiện có, thêm *android.enableAapt2=true* trong *gradle.properties* và restart lại Gradle bằng *./gradlew --stop* từ command line.
@@ -38,7 +38,7 @@
 - Generate *App Bundle* bằng cách sử dụng Android Studio từ 3.2 trở lên hoặc Console *./gradlew bundle*.
 - *App Bundle* được tạo ra sẽ lưu trữ trong *app/build/outputs/bundle/buildVariant/bundle.aab*
 - Khi build *app bundle*, mặc định tất cả các phân tách sẽ được generate. Ta có thể thiết lập những phần nào sẽ được đóng gói vào APK bằng cách sử dụng khối bundle{} trong khối android{}
-	<img src="images/setup_bundle_generate.png">
+	<img src="images/setup_bundle_generate.png"/>
 
 <img src="images/build_app_bundle.png"/>
 
@@ -47,7 +47,7 @@
 ### Generate APKs từ App Bundle
 - Generate apks từ *app bundle*: *java -jar ./bundletool-all-0.10.0.jar build-apks --bundle=./app.aab --output=./out.apks*
 
-<img src="images/result_apk_set.png">
+<img src="images/result_apk_set.png"/>
 
 - Cài vào device: *java -jar ./bundletool-all-0.10.0.jar install-apks --apks=./out.apks*
 
@@ -55,14 +55,13 @@
 
 - Nếu không muốn build một bộ APk cho tất cả các cấu hình device, có thể tạo APK nhắm mục tiêu cấu hình thiết bị cụ thể.
 	+ Thiết bị được kết nối: *java -jar ./bundletool-all-0.10.0.jar  build-apks --connected-device --bundle=./app.aab --output=./out_specific.apks*
-	
 <img src="images/result_apk_connected.png"/>
 
 	+ Sử dụng tệp Json mô tả cấu hình device: java -jar ./bundletool-all-0.10.0.jar  build-apks --device-spec=./pixel1.json --bundle=./app.aab --output=./out_specific_json.apks
 	
-<img src="images/device_specific_json.png">
+<img src="images/device_specific_json.png"/>
 
-<img src="images/result_apk_connected.png">
+<img src="images/result_apk_connected.png"/>
 
 # Phần 2: Dynamic Deliver
 - Mô hình phục vụ ứng dụng Google Play, sử dụng *App Bundle* để tạo ra APK nhỏ hơn, tối ưu hóa cho từng cấu hình device. Vì vậy, người dùng chỉ cần download code và resouces cần thiết để chạy app. Bạn không cần phải xây dựng và quản lý nhiều APK để hỗ trợ cho các device khác nhau nữa.
@@ -87,6 +86,10 @@
 	<img src="images/lower21.png">
 
 ## Dynamic feature module
+- Cho phép tách các tính năng nhất định khỏi module cơ sở của ứng dụng và đưa chúng vào *app bundle*. Dựa vào Dynamic Delivery, sau này có thể download và install các tính năng đó theo yêu cầu của.
+### Tạo Dynamic Feature Module
+- Yêu cầu sử dụng Android Studio từ 3.2 trở lên: File -> New -> New Module -> Dynamic Feature Module -> Next
+- 
 
 ## Tham khảo
 - https://developer.android.com/guide/app-bundle
@@ -94,3 +97,6 @@
 - https://medium.com/mindorks/android-app-bundle-6c65ce8105a1
 - https://viblo.asia/p/gioi-thieu-ve-android-app-bundle-m68Z00r6ZkG
 - https://viblo.asia/p/co-ban-ve-android-app-bundle-ByEZkNdqKQ0
+- https://developer.android.com/guide/app-bundle/playcore
+- https://developer.android.com/studio/preview/features#conditional-delivery
+- https://developer.android.com/studio/projects/dynamic-delivery#customize_delivery
