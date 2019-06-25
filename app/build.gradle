@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.appbundlesample"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,21 @@ android {
         }
     }
 
+    bundle {
+        language {
+            enableSplit = true
+        }
+
+        density {
+            enableSplit = true
+        }
+
+        abi {
+            enableSplit = true
+        }
+    }
+
+    /*Specifies dynamic feature modules that have a dependency on this base module.*/
     dynamicFeatures = [":dynamic_feature", ":dynamic_feature2"]
 }
 

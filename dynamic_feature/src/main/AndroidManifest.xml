@@ -2,23 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:dist="http://schemas.android.com/apk/distribution"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.dynamic_feature">
+          package="com.example.dynamic_feature"
+          split="dynamic_feature">
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
-        dist:title="@string/title_dynamic_feature">
+        dist:onDemand="false"
+        dist:title="@string/title_module_1">
         <dist:fusing dist:include="true"/>
     </dist:module>
 
     <application
         android:hasCode="false"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        tools:replace="android:hasCode"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
         <activity
             android:name=".DynamicActivity"
-            android:label="@string/title_dynamic_feature"
-            android:theme="@style/Theme.AppCompat">
-        </activity>
+            android:label="@string/title_module_1"
+            android:theme="@style/AppTheme"/>
     </application>
-
 </manifest>

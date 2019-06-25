@@ -9,7 +9,8 @@
 - Support Instant App: Người dùng có thể chạy các feature module mà không cần phải cài đặt app. Tham khảo Instant App 
   <a href="https://viblo.asia/p/android-instant-app-buoc-dot-pha-cho-trai-nghiem-nguoi-dung-XL6lAA0mlek">Tại đây</a>
 
-## Định dạng App Bundle
+## Định dạng file aab và apks
+### File aab
 - App Bundle là một file (có phần mở rộng .aab, không thể cài đặt trên device) mà bản upload lên Google Play để được support *Dynamic Delivery*.
 - App Bundle là các tệp nhị phân được ký kết, sắp xếp code và resource trong module.
 
@@ -55,11 +56,12 @@
 
 - Nếu không muốn build một bộ APk cho tất cả các cấu hình device, có thể tạo APK nhắm mục tiêu cấu hình thiết bị cụ thể.
 	+ Thiết bị được kết nối: *java -jar ./bundletool-all-0.10.0.jar  build-apks --connected-device --bundle=./app.aab --output=./out_specific.apks*
-<img src="images/result_apk_connected.png"/>
+
+	<img src="images/result_apk_connected.png"/>
 
 	+ Sử dụng tệp Json mô tả cấu hình device: java -jar ./bundletool-all-0.10.0.jar  build-apks --device-spec=./pixel1.json --bundle=./app.aab --output=./out_specific_json.apks
 	
-<img src="images/device_specific_json.png"/>
+	<img src="images/device_specific_json.png"/>
 
 <img src="images/result_apk_connected.png"/>
 
@@ -80,8 +82,8 @@
 
 <img src="images/split_apk.png">
 
-	+ Ví dụ: Khi user device có cấu hình: x86, hdpi, en thì APK tương ứng là (base + x86 + hdpi + en).apk
-	+ Nếu nguời dùng thay đổi cấu hình device ở thời điểm nào đó (chẳng hạn như thay đổi ngôn ngữ), PlayStore sẽ nhận ra điều này và sẽ tải xuống các phần chia cấu hình mới cho tất cả các ứng dụng sử dụng *split APK* trên thiết bị. Nếu device không có internet thì nó sẽ tải xuống sau.
++ Ví dụ: Khi user device có cấu hình: x86, hdpi, en thì APK tương ứng là (base + x86 + hdpi + en).apk
++ Nếu nguời dùng thay đổi cấu hình device ở thời điểm nào đó (chẳng hạn như thay đổi ngôn ngữ), PlayStore sẽ nhận ra điều này và sẽ tải xuống các phần chia cấu hình mới cho tất cả các ứng dụng sử dụng *split APK* trên thiết bị. Nếu device không có internet thì nó sẽ tải xuống sau.
 - Đối với các device dưới Android 5.0 không hỗ trợ tải xuống và cài đặt *split APKs*, Google Play sẽ thay thế nó bằng một APK duy nhất gọi là multi-APK. Thay vì chia tách ra, APK độc lập sẽ được tạo phù hợp với ma trận kết hợp các kiến trúc và mật độ thiết bị khác nhau. Theo cách tiếp cận này thì tất cả các ngôn ngữ sẽ nằm trong APK vì ma trận sẽ trở nên quá lớn khi kết hợp.
 	<img src="images/lower21.png">
 
@@ -89,14 +91,58 @@
 - Cho phép tách các tính năng nhất định khỏi module cơ sở của ứng dụng và đưa chúng vào *app bundle*. Dựa vào Dynamic Delivery, sau này có thể download và install các tính năng đó theo yêu cầu của.
 ### Tạo Dynamic Feature Module
 - Yêu cầu sử dụng Android Studio từ 3.2 trở lên: File -> New -> New Module -> Dynamic Feature Module -> Next
-- 
+
+<img src="images/manifest_feature_module.png"/>
+
+- Thiết lập mối quan hệ với base module:
+- Android sử dụng một plugin mới "com.android.dynamic-feature" để xây dựng dynamic feature module. Chỉ định tên của base module, vì vậy chúng ta có thể sử dụng các chức năng của base module.
+
+<img src="images/config_dynamic_module.png"/>
+
+- Cần khai báo tất cả các dynamic feature modules trong build.gradle của base module.
+
+<img src="images/relate_base_module.png"/>
+
+### Download modules with the Play Core Library
+- Quy trình download:
+<img src="images/download_dynamic_feature.png"/>
+- Thêm thư viện Play Core Library:
+
+<img src="images/lib_play_core.png"/>
+
+- Request an on demand module: Cần chỉ định rõ tên của module được xác định bởi thuộc tính *split* trong module's manifest.
+<img src="images/request_modules.png"/>
+	+ Defer installation of on demand modules: Trì hoãn cài đặt khi ứng dụng ở background (vd: tải xuống một số hình ảnh quảng cáo cho việc cài đặt app sau này). Với cách này thì ta không thể theo dõi tiến trình. Vì vậy trước khi truy cập vào một module đã chỉ định cài đặt trì hoãn, ta nên kiểm tra module đã được cài đặt hay chưa.
+	<img src="images/defer_install.png"/>
+
+- Theo dõi trạng thái yêu cầu: Để cập nhật progress, xử lý lỗi, Xử lý intent sau khi cài đặt
+
+<img src="images/listen_state.png"/>
+
+- Xử lý lỗi khi download hoặc cài đặt module: Nếu xảy ra lỗi, hãy xem xét hiển thị hộp thoại cung cấp 2 tùy chọn cho người dùng: *Try again* và *Cancel*
+<img src="images/handle_error.png"/>
+
+- Xử lý trạng thái update:
+<img src="images/handle_state_update.png"/>
+
+- Trong một vài trường hợp, cần có xác nhận của user. Ví dụ: Tải 1 lượng lớn data (>10MB)
+<img src="images/user_confirmation.png"/>
+
+<img src="images/callback_confirmation.png"/>
+
+- Hủy yêu cầu cài đặt:
+
+<img src="images/cancel_install_request.png"/>
+
+- Quản lý các module đã cài đặt:
+
+<img src="images/installed_module.png"/>
+
+- Uninstall modules:
+
+<img src="images/uninstall_module.png"/>
 
 ## Tham khảo
 - https://developer.android.com/guide/app-bundle
 - https://medium.com/google-developer-experts/exploring-the-android-app-bundle-ca16846fa3d7
 - https://medium.com/mindorks/android-app-bundle-6c65ce8105a1
-- https://viblo.asia/p/gioi-thieu-ve-android-app-bundle-m68Z00r6ZkG
-- https://viblo.asia/p/co-ban-ve-android-app-bundle-ByEZkNdqKQ0
-- https://developer.android.com/guide/app-bundle/playcore
-- https://developer.android.com/studio/preview/features#conditional-delivery
-- https://developer.android.com/studio/projects/dynamic-delivery#customize_delivery

@@ -14,11 +14,10 @@ import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var splitInstallManager: SplitInstallManager
+    private val splitInstallManager by lazy { SplitInstallManagerFactory.create(this) }
 
     private lateinit var request: SplitInstallRequest
 
@@ -32,9 +31,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.button_download_feature_1 -> downloadFeatureModule()
-
-            R.id.button_goto_feature -> startDynamicFeature()
+            R.id.button_download_feature_1 -> downloadFeatureModule(DYNAMIC_FEATURE_MODULE_1)
+            R.id.button_goto_feature_1 -> startDynamicFeature(CLASS_NAME_MODULE_1)
+            R.id.button_download_feature_2 -> downloadFeatureModule(DYNAMIC_FEATURE_MODULE_2)
+            R.id.button_goto_feature_2 -> startDynamicFeature(CLASS_NAME_MODULE_2)
         }
     }
 
@@ -47,18 +47,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun initComponent() {
         button_download_feature_1.setOnClickListener(this)
-        button_goto_feature.setOnClickListener(this)
+        button_goto_feature_1.setOnClickListener(this)
+        button_download_feature_2.setOnClickListener(this)
+        button_goto_feature_2.setOnClickListener(this)
     }
 
-    /*
-    * Option 1: Use SplitInstallManager.startInstall(). Require App in Foreground
-    */
-    private fun downloadFeatureModule() {
-
-        splitInstallManager = SplitInstallManagerFactory.create(this)
+    /* Option 1: Use SplitInstallManager.startInstall(). Require App in Foreground*/
+    private fun downloadFeatureModule(nameModule: String) {
 
         request = SplitInstallRequest.newBuilder()
-                .addModule(DYNAMIC_FEATURE)
+                .addModule(nameModule)
                 .build()
         /*
         * Can instead by splitInstallManager.deferredInstall()
@@ -97,7 +95,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             if (state.sessionId() == this.sessionId) {
                 when (state.status()) {
-                    SplitInstallSessionStatus.DOWNLOADING -> showMessage(resources.getString(R.string.downloading))
+                    SplitInstallSessionStatus.PENDING -> {
+                        // The request has been accepted and the download should start soon.
+                    }
+                    SplitInstallSessionStatus.DOWNLOADING -> {
+                        showMessage(resources.getString(R.string.downloading))
+                        // update progressBar
+                        val totalBytes = state.totalBytesToDownload()
+                        val progress = state.bytesDownloaded()
+                    }
                     SplitInstallSessionStatus.DOWNLOADED -> showMessage(resources.getString(R.string.downloaded))
                     SplitInstallSessionStatus.INSTALLED -> {
                         // After installed, you can start accessing it. Fire an Intent
@@ -111,7 +117,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                         /*
-                       * Displays a dialog for user "Download" or "Cancel"
+                       * Displays a dialog for user "Download" or "Cancel" >10MB
                        * Params:
                        *   + Download -> request status changes to:  PENDING
                        *   + Cancel -> CANCELED
@@ -142,16 +148,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     /*To uninstall module*/
     private fun uninstallModule() {
-        splitInstallManager.deferredUninstall(Arrays.asList(DYNAMIC_FEATURE))
+        splitInstallManager.deferredUninstall(listOf(DYNAMIC_FEATURE_MODULE_2))
     }
 
+    /*Check if there are nay request that are still downloading*/
     private fun checkForActiveDownloads() {
         splitInstallManager.sessionStates
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         for (state in task.result) {
                             if (state.status() == SplitInstallSessionStatus.DOWNLOADING) {
-                                // Cancel the request or request a deferred installation
+                                // Dang co yeu cau tai xuong
                                 cancelRequest()
                             }
                         }
@@ -159,8 +166,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
     }
 
-    private fun startDynamicFeature() {
-        Intent(this@MainActivity, Class.forName("com.example.dynamic_feature.DynamicActivity")).apply {
+    private fun startDynamicFeature(className: String) {
+        Intent(this@MainActivity, Class.forName(className)).apply {
             startActivity(this)
         }
     }
@@ -168,7 +175,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun Context.showMessage(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     companion object {
-        private const val DYNAMIC_FEATURE = "dynamic_feature"
+        private const val DYNAMIC_FEATURE_MODULE_1 = "dynamic_feature"
+
+        private const val DYNAMIC_FEATURE_MODULE_2 = "dynamic_feature2"
+
+        private const val CLASS_NAME_MODULE_1 = "com.example.dynamic_feature.DynamicActivity"
+
+        private const val CLASS_NAME_MODULE_2 = "com.example.dynamic_feature2.MainActivity"
 
         private const val REQUIRES_USER_CONFIRMATION = 1
     }
