@@ -91,15 +91,18 @@
 - Cho phép tách các tính năng nhất định khỏi module cơ sở của ứng dụng và đưa chúng vào *app bundle*. Dựa vào Dynamic Delivery, sau này có thể download và install các tính năng đó theo yêu cầu của.
 ### Tạo Dynamic Feature Module
 - Yêu cầu sử dụng Android Studio từ 3.2 trở lên: File -> New -> New Module -> Dynamic Feature Module -> Next
+- <b> Note : Before creating a dynamic module, you have to create you app bundle. </b>
 
 <img src="images/manifest_feature_module.png"/>
+
+- Note: *If the dynamic feature module generates no DEX files, use hasCode va replace*
 
 - Thiết lập mối quan hệ với base module:
 - Android sử dụng một plugin mới "com.android.dynamic-feature" để xây dựng dynamic feature module. Chỉ định tên của base module, vì vậy chúng ta có thể sử dụng các chức năng của base module.
 
 <img src="images/config_dynamic_module.png"/>
 
-- Cần khai báo tất cả các dynamic feature modules trong build.gradle của base module.
+- Cần khai báo tất cả các dynamic feature modules trong build.gradle của base module. Để cho Gradle biết bạn cần tất cả resources và code khả dụng cho các dynamic modules khác.
 
 <img src="images/relate_base_module.png"/>
 

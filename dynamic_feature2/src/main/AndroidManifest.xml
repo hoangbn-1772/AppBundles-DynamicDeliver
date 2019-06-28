@@ -12,6 +12,7 @@
         <dist:fusing dist:include="true"/>
     </dist:module>
 
+    <!--Use hasCode and replace when DFM generates no DEX files-->
     <application
         android:hasCode="false"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
